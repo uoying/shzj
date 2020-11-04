@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjSilkMapper">
+    
+    <resultMap type="ShzjSilk" id="ShzjSilkResult">
+        <result property="silkId"    column="silk_id"    />
+        <result property="silkTitle"    column="silk_title"    />
+        <result property="silkLine"    column="silk_line"    />
+        <result property="silkUrl"    column="silk_url"    />
+        <result property="silkPic"    column="silk_pic"    />
+        <result property="enjoyNum"    column="enjoy_num"    />
+        <result property="cityId"    column="city_id"    />
+    </resultMap>
+
+    <sql id="selectShzjSilkVo">
+        select silk_id, silk_title, silk_line, silk_url, silk_pic, enjoy_num, city_id from shzj_silk
+    </sql>
+
+    <select id="selectShzjSilkList" parameterType="ShzjSilk" resultMap="ShzjSilkResult">
+        <include refid="selectShzjSilkVo"/>
+        <where>  
+            <if test="silkTitle != null  and silkTitle != ''"> and silk_title = #{silkTitle}</if>
+            <if test="silkLine != null  and silkLine != ''"> and silk_line = #{silkLine}</if>
+            <if test="silkUrl != null  and silkUrl != ''"> and silk_url = #{silkUrl}</if>
+            <if test="silkPic != null  and silkPic != ''"> and silk_pic = #{silkPic}</if>
+            <if test="enjoyNum != null  and enjoyNum != ''"> and enjoy_num = #{enjoyNum}</if>
+            <if test="cityId != null "> and city_id = #{cityId}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjSilkById" parameterType="Integer" resultMap="ShzjSilkResult">
+        <include refid="selectShzjSilkVo"/>
+        where silk_id = #{silkId}
+    </select>
+        
+    <insert id="insertShzjSilk" parameterType="ShzjSilk" useGeneratedKeys="true" keyProperty="silkId">
+        insert into shzj_silk
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="silkTitle != null and silkTitle != ''">silk_title,</if>
+            <if test="silkLine != null and silkLine != ''">silk_line,</if>
+            <if test="silkUrl != null">silk_url,</if>
+            <if test="silkPic != null and silkPic != ''">silk_pic,</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num,</if>
+            <if test="cityId != null">city_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="silkTitle != null and silkTitle != ''">#{silkTitle},</if>
+            <if test="silkLine != null and silkLine != ''">#{silkLine},</if>
+            <if test="silkUrl != null">#{silkUrl},</if>
+            <if test="silkPic != null and silkPic != ''">#{silkPic},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">#{enjoyNum},</if>
+            <if test="cityId != null">#{cityId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjSilk" parameterType="ShzjSilk">
+        update shzj_silk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="silkTitle != null and silkTitle != ''">silk_title = #{silkTitle},</if>
+            <if test="silkLine != null and silkLine != ''">silk_line = #{silkLine},</if>
+            <if test="silkUrl != null">silk_url = #{silkUrl},</if>
+            <if test="silkPic != null and silkPic != ''">silk_pic = #{silkPic},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num = #{enjoyNum},</if>
+            <if test="cityId != null">city_id = #{cityId},</if>
+        </trim>
+        where silk_id = #{silkId}
+    </update>
+
+    <delete id="deleteShzjSilkById" parameterType="Integer">
+        delete from shzj_silk where silk_id = #{silkId}
+    </delete>
+
+    <delete id="deleteShzjSilkByIds" parameterType="String">
+        delete from shzj_silk where silk_id in 
+        <foreach item="silkId" collection="array" open="(" separator="," close=")">
+            #{silkId}
+        </foreach>
+    </delete>
+
+</mapper>

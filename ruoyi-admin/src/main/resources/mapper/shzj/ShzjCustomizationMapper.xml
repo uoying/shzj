@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjCustomizationMapper">
+    
+    <resultMap type="ShzjCustomization" id="ShzjCustomizationResult">
+        <result property="customId"    column="custom_id"    />
+        <result property="customPic"    column="custom_pic"    />
+        <result property="customTitle"    column="custom_title"    />
+        <result property="customAddress"    column="custom_address"    />
+        <result property="customContent"    column="custom_content"    />
+        <result property="city"    column="city"    />
+        <result property="customType"    column="custom_type"    />
+        <result property="isbutton"    column="isButton"    />
+        <result property="buttonName"    column="button_name"    />
+        <result property="buttonContents"    column="button_contents"    />
+    </resultMap>
+
+    <sql id="selectShzjCustomizationVo">
+        select custom_id, custom_pic, custom_title, custom_address, custom_content, city, custom_type, isButton, button_name, button_contents from shzj_customization
+    </sql>
+
+    <select id="selectShzjCustomizationList" parameterType="ShzjCustomization" resultMap="ShzjCustomizationResult">
+        <include refid="selectShzjCustomizationVo"/>
+        <where>  
+            <if test="customPic != null  and customPic != ''"> and custom_pic = #{customPic}</if>
+            <if test="customTitle != null  and customTitle != ''"> and custom_title = #{customTitle}</if>
+            <if test="customAddress != null  and customAddress != ''"> and custom_address = #{customAddress}</if>
+            <if test="customContent != null  and customContent != ''"> and custom_content = #{customContent}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="customType != null  and customType != ''"> and custom_type = #{customType}</if>
+            <if test="isbutton != null "> and isButton = #{isbutton}</if>
+            <if test="buttonName != null  and buttonName != ''"> and button_name like concat('%', #{buttonName}, '%')</if>
+            <if test="buttonContents != null  and buttonContents != ''"> and button_contents = #{buttonContents}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjCustomizationById" parameterType="Integer" resultMap="ShzjCustomizationResult">
+        <include refid="selectShzjCustomizationVo"/>
+        where custom_id = #{customId}
+    </select>
+        
+    <insert id="insertShzjCustomization" parameterType="ShzjCustomization" useGeneratedKeys="true" keyProperty="customId">
+        insert into shzj_customization
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customPic != null and customPic != ''">custom_pic,</if>
+            <if test="customTitle != null and customTitle != ''">custom_title,</if>
+            <if test="customAddress != null and customAddress != ''">custom_address,</if>
+            <if test="customContent != null and customContent != ''">custom_content,</if>
+            <if test="city != null and city != ''">city,</if>
+            <if test="customType != null and customType != ''">custom_type,</if>
+            <if test="isbutton != null">isButton,</if>
+            <if test="buttonName != null">button_name,</if>
+            <if test="buttonContents != null">button_contents,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customPic != null and customPic != ''">#{customPic},</if>
+            <if test="customTitle != null and customTitle != ''">#{customTitle},</if>
+            <if test="customAddress != null and customAddress != ''">#{customAddress},</if>
+            <if test="customContent != null and customContent != ''">#{customContent},</if>
+            <if test="city != null and city != ''">#{city},</if>
+            <if test="customType != null and customType != ''">#{customType},</if>
+            <if test="isbutton != null">#{isbutton},</if>
+            <if test="buttonName != null">#{buttonName},</if>
+            <if test="buttonContents != null">#{buttonContents},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjCustomization" parameterType="ShzjCustomization">
+        update shzj_customization
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customPic != null and customPic != ''">custom_pic = #{customPic},</if>
+            <if test="customTitle != null and customTitle != ''">custom_title = #{customTitle},</if>
+            <if test="customAddress != null and customAddress != ''">custom_address = #{customAddress},</if>
+            <if test="customContent != null and customContent != ''">custom_content = #{customContent},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="customType != null and customType != ''">custom_type = #{customType},</if>
+            <if test="isbutton != null">isButton = #{isbutton},</if>
+            <if test="buttonName != null">button_name = #{buttonName},</if>
+            <if test="buttonContents != null">button_contents = #{buttonContents},</if>
+        </trim>
+        where custom_id = #{customId}
+    </update>
+
+    <delete id="deleteShzjCustomizationById" parameterType="Integer">
+        delete from shzj_customization where custom_id = #{customId}
+    </delete>
+
+    <delete id="deleteShzjCustomizationByIds" parameterType="String">
+        delete from shzj_customization where custom_id in 
+        <foreach item="customId" collection="array" open="(" separator="," close=")">
+            #{customId}
+        </foreach>
+    </delete>
+
+</mapper>

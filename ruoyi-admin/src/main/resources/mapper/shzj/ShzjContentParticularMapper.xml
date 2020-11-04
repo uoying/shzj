@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjContentParticularMapper">
+    
+    <resultMap type="ShzjContentParticular" id="ShzjContentParticularResult">
+        <result property="particularId"    column="particular_id"    />
+        <result property="conId"    column="con_id"    />
+        <result property="is720"    column="is_720"    />
+        <result property="likeNum"    column="like_num"    />
+        <result property="particularH5"    column="particular_h5"    />
+        <result property="mianPicurl"    column="mian_picurl"    />
+        <result property="minorPicurl"    column="minor_picurl"    />
+        <result column="arrays" property="arrays"/>
+    </resultMap>
+
+    <sql id="selectShzjContentParticularVo">
+        select particular_id, con_id, is_720, like_num, particular_h5, mian_picurl, minor_picurl, arrays from shzj_content_particular
+    </sql>
+
+    <select id="selectShzjContentParticularList" parameterType="ShzjContentParticular" resultMap="ShzjContentParticularResult">
+        <include refid="selectShzjContentParticularVo"/>
+        <where>  
+            <if test="conId != null "> and con_id = #{conId}</if>
+            <if test="is720 != null "> and is_720 = #{is720}</if>
+            <if test="likeNum != null "> and like_num = #{likeNum}</if>
+            <if test="particularH5 != null  and particularH5 != ''"> and particular_h5 = #{particularH5}</if>
+            <if test="mianPicurl != null  and mianPicurl != ''"> and mian_picurl = #{mianPicurl}</if>
+            <if test="minorPicurl != null  and minorPicurl != ''"> and minor_picurl = #{minorPicurl}</if>
+            <if test="arrays != null  and arrays != ''"> and arrays = #{arrays}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjContentParticularById" parameterType="Integer" resultMap="ShzjContentParticularResult">
+        <include refid="selectShzjContentParticularVo"/>
+        where particular_id = #{particularId}
+    </select>
+        
+    <insert id="insertShzjContentParticular" parameterType="ShzjContentParticular" useGeneratedKeys="true" keyProperty="particularId">
+        insert into shzj_content_particular
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="conId != null">con_id,</if>
+            <if test="is720 != null">is_720,</if>
+            <if test="likeNum != null">like_num,</if>
+            <if test="particularH5 != null and particularH5 != ''">particular_h5,</if>
+            <if test="mianPicurl != null and mianPicurl != ''">mian_picurl,</if>
+            <if test="minorPicurl != null">minor_picurl,</if>
+            <if test="arrays != null">arrays,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="conId != null">#{conId},</if>
+            <if test="is720 != null">#{is720},</if>
+            <if test="likeNum != null">#{likeNum},</if>
+            <if test="particularH5 != null and particularH5 != ''">#{particularH5},</if>
+            <if test="mianPicurl != null and mianPicurl != ''">#{mianPicurl},</if>
+            <if test="minorPicurl != null">#{minorPicurl},</if>
+            <if test="arrays != null">#{arrays},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjContentParticular" parameterType="ShzjContentParticular">
+        update shzj_content_particular
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="conId != null">con_id = #{conId},</if>
+            <if test="is720 != null">is_720 = #{is720},</if>
+            <if test="likeNum != null">like_num = #{likeNum},</if>
+            <if test="particularH5 != null and particularH5 != ''">particular_h5 = #{particularH5},</if>
+            <if test="mianPicurl != null and mianPicurl != ''">mian_picurl = #{mianPicurl},</if>
+            <if test="minorPicurl != null">minor_picurl = #{minorPicurl},</if>
+            <if test="arrays != null">arrays = #{arrays},</if>
+        </trim>
+        where particular_id = #{particularId}
+    </update>
+
+    <delete id="deleteShzjContentParticularById" parameterType="Integer">
+        delete from shzj_content_particular where particular_id = #{particularId}
+    </delete>
+
+    <delete id="deleteShzjContentParticularByIds" parameterType="String">
+        delete from shzj_content_particular where particular_id in 
+        <foreach item="particularId" collection="array" open="(" separator="," close=")">
+            #{particularId}
+        </foreach>
+    </delete>
+
+</mapper>

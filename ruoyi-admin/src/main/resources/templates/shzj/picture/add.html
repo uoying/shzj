@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增图片信息')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-picture-add">
+        <div class="form-group">
+            <label class="font-noraml">图片上传</label>
+            <div class="file-loading">
+                <input name="pictures" id="fileinput-demo-1" type="file" multiple>
+            </div>
+        </div>
+    </form>
+    <h1 style="text-align: center ;color: red">上传图片请点击上传！！！</h1>
+    <h1 style="text-align: center ;color: red">禁点击左下角的确定！！！</h1>
+    <h1 style="text-align: center ;color: red">点它报错头给你敲烂！！！</h1>
+    <h1 style="text-align: center ;color: red">上传后刷新列表检查信息是否添加成功！！！</h1>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script th:inline="javascript">
+    var prefix = ctx + "shzj/picture"
+    $("#form-picture-add").validate({
+        focusCleanup: true
+    });
+    $(document).ready(function () {
+        $("#fileinput-demo-1").fileinput({
+            'theme': 'explorer-fas',
+            'uploadUrl': prefix + "/add",
+            overwriteInitial: false,
+            initialPreviewAsData: true,
+            initialPreview: [
+
+            ]
+        });
+    });
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-picture-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

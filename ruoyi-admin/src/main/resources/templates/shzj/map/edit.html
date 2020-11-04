@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改地图信息')" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-map-edit" th:object="${shzjMap}">
+            <input name="mapId" th:field="*{mapId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">地图城市：</label>
+                <div class="col-sm-8">
+                    <select  class="form-control" required name="mapCity">
+                        <th:block  th:each="c:${cityList}">
+                            <option th:if="${c.cityId}==*{mapCity}" th:value="${c.cityId}" th:text="${c.cityName}" selected></option>
+                            <option th:unless="${c.cityId}==*{mapCity}" th:value="${c.cityId}" th:text="${c.cityName}"></option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">内容类型：</label>
+                <div class="col-sm-8">
+                    <select name="mapType" class="form-control" required>
+                        <option selected th:value="*{mapType}" th:text="*{mapType}"></option>
+                        <option value="美食">美食</option>
+                        <option value="美景">美景</option>
+                        <option value="文化">文化</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">图片：</label>
+                <div class="col-sm-8">
+                    <input name="picUrl" th:field="*{picUrl}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label ">内容编号：</label>
+                <div class="col-sm-8">
+                    <select  class="form-control" name="contentId">
+                        <option value="0">Null</option>
+                        <th:block  th:each="c:${contentList}">
+                            <option th:if="${c.conId}==*{contentId}" selected th:value="${c.conId}" th:text="${c.conTitile}"></option>
+                            <option th:unless="${c.conId}==*{contentId}" th:value="${c.conId}" th:text="${c.conTitile}"></option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label ">标题：</label>
+                <div class="col-sm-8">
+                    <input name="mapTitle" th:field="*{mapTitle}" class="form-control" type="text" >
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">URL生成：</label>
+                <div class="col-sm-8">
+                    <div class="file-loading">
+                        <input class="form-control file-upload" id="mianPicurl" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script th:inline="javascript">
+        var prefix = ctx + "shzj/map";
+        $("#form-map-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-map-edit').serialize());
+            }
+        }
+        $(".file-upload").fileinput({
+            uploadUrl: '/common/qiniuUpload',
+            autoReplace: true
+        }).on('fileuploaded', function (event, data, previewId, index) {
+            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            window.alert(data.response.msg);
+        }).on('fileremoved', function (event, id, index) {
+            $("input[name='" + event.currentTarget.id + "']").val('')
+        })
+    </script>
+</body>
+</html>

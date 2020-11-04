@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjFeaturesTypeMapper">
+    
+    <resultMap type="ShzjFeaturesType" id="ShzjFeaturesTypeResult">
+        <result property="featuresId"    column="features_id"    />
+        <result property="featuresName"    column="features_name"    />
+    </resultMap>
+
+    <sql id="selectShzjFeaturesTypeVo">
+        select features_id, features_name from shzj_features_type
+    </sql>
+
+    <select id="selectShzjFeaturesTypeList" parameterType="ShzjFeaturesType" resultMap="ShzjFeaturesTypeResult">
+        <include refid="selectShzjFeaturesTypeVo"/>
+        <where>  
+            <if test="featuresName != null  and featuresName != ''"> and features_name like concat('%', #{featuresName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjFeaturesTypeById" parameterType="Integer" resultMap="ShzjFeaturesTypeResult">
+        <include refid="selectShzjFeaturesTypeVo"/>
+        where features_id = #{featuresId}
+    </select>
+        
+    <insert id="insertShzjFeaturesType" parameterType="ShzjFeaturesType" useGeneratedKeys="true" keyProperty="featuresId">
+        insert into shzj_features_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="featuresName != null and featuresName != ''">features_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="featuresName != null and featuresName != ''">#{featuresName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjFeaturesType" parameterType="ShzjFeaturesType">
+        update shzj_features_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="featuresName != null and featuresName != ''">features_name = #{featuresName},</if>
+        </trim>
+        where features_id = #{featuresId}
+    </update>
+
+    <delete id="deleteShzjFeaturesTypeById" parameterType="Integer">
+        delete from shzj_features_type where features_id = #{featuresId}
+    </delete>
+
+    <delete id="deleteShzjFeaturesTypeByIds" parameterType="String">
+        delete from shzj_features_type where features_id in 
+        <foreach item="featuresId" collection="array" open="(" separator="," close=")">
+            #{featuresId}
+        </foreach>
+    </delete>
+
+</mapper>

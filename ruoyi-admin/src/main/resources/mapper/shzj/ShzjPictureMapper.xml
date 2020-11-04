@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjPictureMapper">
+    
+    <resultMap type="ShzjPicture" id="ShzjPictureResult">
+        <result property="picId"    column="pic_id"    />
+        <result property="picUrl"    column="pic_url"    />
+    </resultMap>
+
+    <sql id="selectShzjPictureVo">
+        select pic_id, pic_url from shzj_picture
+    </sql>
+
+    <select id="selectShzjPictureList" parameterType="ShzjPicture" resultMap="ShzjPictureResult">
+        <include refid="selectShzjPictureVo"/>
+        <where>  
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjPictureById" parameterType="Integer" resultMap="ShzjPictureResult">
+        <include refid="selectShzjPictureVo"/>
+        where pic_id = #{picId}
+    </select>
+        
+    <insert id="insertShzjPicture" parameterType="ShzjPicture" useGeneratedKeys="true" keyProperty="picId">
+        insert into shzj_picture
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="picUrl != null and picUrl != ''">pic_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="picUrl != null and picUrl != ''">#{picUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjPicture" parameterType="ShzjPicture">
+        update shzj_picture
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="picUrl != null and picUrl != ''">pic_url = #{picUrl},</if>
+        </trim>
+        where pic_id = #{picId}
+    </update>
+
+    <delete id="deleteShzjPictureById" parameterType="Integer">
+        delete from shzj_picture where pic_id = #{picId}
+    </delete>
+
+    <delete id="deleteShzjPictureByIds" parameterType="String">
+        delete from shzj_picture where pic_id in 
+        <foreach item="picId" collection="array" open="(" separator="," close=")">
+            #{picId}
+        </foreach>
+    </delete>
+
+</mapper>

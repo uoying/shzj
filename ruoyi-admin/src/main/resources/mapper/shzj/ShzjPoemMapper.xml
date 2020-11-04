@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjPoemMapper">
+    
+    <resultMap type="ShzjPoem" id="ShzjPoemResult">
+        <result property="poemId"    column="poem_id"    />
+        <result property="poemName"    column="poem_name"    />
+        <result property="poemAuthor"    column="poem_author"    />
+        <result property="poemArtcle"    column="poem_artcle"    />
+        <result property="poemPicture"    column="poem_picture"    />
+        <result property="poemAudio"    column="poem_audio"    />
+    </resultMap>
+
+    <sql id="selectShzjPoemVo">
+        select poem_id, poem_name, poem_author, poem_artcle, poem_picture, poem_audio from shzj_poem
+    </sql>
+
+    <select id="selectShzjPoemList" parameterType="ShzjPoem" resultMap="ShzjPoemResult">
+        <include refid="selectShzjPoemVo"/>
+        <where>  
+            <if test="poemName != null  and poemName != ''"> and poem_name like concat('%', #{poemName}, '%')</if>
+            <if test="poemAuthor != null  and poemAuthor != ''"> and poem_author = #{poemAuthor}</if>
+            <if test="poemArtcle != null  and poemArtcle != ''"> and poem_artcle = #{poemArtcle}</if>
+            <if test="poemPicture != null  and poemPicture != ''"> and poem_picture = #{poemPicture}</if>
+            <if test="poemAudio != null  and poemAudio != ''"> and poem_audio = #{poemAudio}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjPoemById" parameterType="Integer" resultMap="ShzjPoemResult">
+        <include refid="selectShzjPoemVo"/>
+        where poem_id = #{poemId}
+    </select>
+        
+    <insert id="insertShzjPoem" parameterType="ShzjPoem" useGeneratedKeys="true" keyProperty="poemId">
+        insert into shzj_poem
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="poemName != null and poemName != ''">poem_name,</if>
+            <if test="poemAuthor != null and poemAuthor != ''">poem_author,</if>
+            <if test="poemArtcle != null and poemArtcle != ''">poem_artcle,</if>
+            <if test="poemPicture != null and poemPicture != ''">poem_picture,</if>
+            <if test="poemAudio != null">poem_audio,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="poemName != null and poemName != ''">#{poemName},</if>
+            <if test="poemAuthor != null and poemAuthor != ''">#{poemAuthor},</if>
+            <if test="poemArtcle != null and poemArtcle != ''">#{poemArtcle},</if>
+            <if test="poemPicture != null and poemPicture != ''">#{poemPicture},</if>
+            <if test="poemAudio != null">#{poemAudio},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjPoem" parameterType="ShzjPoem">
+        update shzj_poem
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="poemName != null and poemName != ''">poem_name = #{poemName},</if>
+            <if test="poemAuthor != null and poemAuthor != ''">poem_author = #{poemAuthor},</if>
+            <if test="poemArtcle != null and poemArtcle != ''">poem_artcle = #{poemArtcle},</if>
+            <if test="poemPicture != null and poemPicture != ''">poem_picture = #{poemPicture},</if>
+            <if test="poemAudio != null">poem_audio = #{poemAudio},</if>
+        </trim>
+        where poem_id = #{poemId}
+    </update>
+
+    <delete id="deleteShzjPoemById" parameterType="Integer">
+        delete from shzj_poem where poem_id = #{poemId}
+    </delete>
+
+    <delete id="deleteShzjPoemByIds" parameterType="String">
+        delete from shzj_poem where poem_id in 
+        <foreach item="poemId" collection="array" open="(" separator="," close=")">
+            #{poemId}
+        </foreach>
+    </delete>
+
+</mapper>

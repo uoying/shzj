@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjButtonContentMapper">
+    
+    <resultMap type="ShzjButtonContent" id="ShzjButtonContentResult">
+        <result property="buttonConId"    column="button_con_id"    />
+        <result property="conPic"    column="con_pic"    />
+        <result property="btnCon"    column="btn_con"    />
+    </resultMap>
+
+    <sql id="selectShzjButtonContentVo">
+        select button_con_id, con_pic, btn_con from shzj_button_content
+    </sql>
+
+    <select id="selectShzjButtonContentList" parameterType="ShzjButtonContent" resultMap="ShzjButtonContentResult">
+        <include refid="selectShzjButtonContentVo"/>
+        <where>  
+            <if test="conPic != null  and conPic != ''"> and con_pic = #{conPic}</if>
+            <if test="btnCon != null  and btnCon != ''"> and btn_con = #{btnCon}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjButtonContentById" parameterType="Integer" resultMap="ShzjButtonContentResult">
+        <include refid="selectShzjButtonContentVo"/>
+        where button_con_id = #{buttonConId}
+    </select>
+        
+    <insert id="insertShzjButtonContent" parameterType="ShzjButtonContent" useGeneratedKeys="true" keyProperty="buttonConId">
+        insert into shzj_button_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="conPic != null and conPic != ''">con_pic,</if>
+            <if test="btnCon != null and btnCon != ''">btn_con,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="conPic != null and conPic != ''">#{conPic},</if>
+            <if test="btnCon != null and btnCon != ''">#{btnCon},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjButtonContent" parameterType="ShzjButtonContent">
+        update shzj_button_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="conPic != null and conPic != ''">con_pic = #{conPic},</if>
+            <if test="btnCon != null and btnCon != ''">btn_con = #{btnCon},</if>
+        </trim>
+        where button_con_id = #{buttonConId}
+    </update>
+
+    <delete id="deleteShzjButtonContentById" parameterType="Integer">
+        delete from shzj_button_content where button_con_id = #{buttonConId}
+    </delete>
+
+    <delete id="deleteShzjButtonContentByIds" parameterType="String">
+        delete from shzj_button_content where button_con_id in 
+        <foreach item="buttonConId" collection="array" open="(" separator="," close=")">
+            #{buttonConId}
+        </foreach>
+    </delete>
+
+</mapper>

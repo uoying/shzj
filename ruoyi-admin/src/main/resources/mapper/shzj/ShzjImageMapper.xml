@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjImageMapper">
+    
+    <resultMap type="ShzjImage" id="ShzjImageResult">
+        <result property="imageId"    column="image_id"    />
+        <result property="imageContentId"    column="image_content_id"    />
+        <result property="imageUrl"    column="image_url"    />
+    </resultMap>
+
+    <sql id="selectShzjImageVo">
+        select image_id, image_content_id, image_url from shzj_image
+    </sql>
+
+    <select id="selectShzjImageList" parameterType="ShzjImage" resultMap="ShzjImageResult">
+        <include refid="selectShzjImageVo"/>
+        <where>  
+            <if test="imageContentId != null "> and image_content_id = #{imageContentId}</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjImageById" parameterType="Integer" resultMap="ShzjImageResult">
+        <include refid="selectShzjImageVo"/>
+        where image_id = #{imageId}
+    </select>
+        
+    <insert id="insertShzjImage" parameterType="ShzjImage" useGeneratedKeys="true" keyProperty="imageId">
+        insert into shzj_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imageContentId != null">image_content_id,</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imageContentId != null">#{imageContentId},</if>
+            <if test="imageUrl != null and imageUrl != ''">#{imageUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjImage" parameterType="ShzjImage">
+        update shzj_image
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imageContentId != null">image_content_id = #{imageContentId},</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+        </trim>
+        where image_id = #{imageId}
+    </update>
+
+    <delete id="deleteShzjImageById" parameterType="Integer">
+        delete from shzj_image where image_id = #{imageId}
+    </delete>
+
+    <delete id="deleteShzjImageByIds" parameterType="String">
+        delete from shzj_image where image_id in 
+        <foreach item="imageId" collection="array" open="(" separator="," close=")">
+            #{imageId}
+        </foreach>
+    </delete>
+    <select id="selectShzjImageH5" resultType="com.ruoyi.shzj.domain.DTO.TxsbDTO">
+             SELECT
+            c.image_content_name imageName,	c.image_content_h5 imageH5,c.image_content_Audio imageAudio,
+            c.image_content_backgroundImg backgroundImg
+            FROM
+                shzj_image i
+                LEFT JOIN shzj_image_content c ON i.image_content_id = c.image_content_id
+            WHERE  i.image_content_id=#{Id} LIMIT 1
+        </select>
+
+    <select id="selectShzjImage" resultType="com.ruoyi.shzj.domain.DTO.ImageDTO">
+        SELECT
+            a.image_id imageId,
+            a.image_url imageUrl,
+            b.image_content_name imageContentName
+        FROM
+            `shzj_image` a
+        LEFT JOIN shzj_image_content b ON a.image_content_id = b.image_content_id
+        </select>
+
+
+</mapper>

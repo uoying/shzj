@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjDynamicContentMapper">
+    
+    <resultMap type="ShzjDynamicContent" id="ShzjDynamicContentResult">
+        <result property="dynamicContentId"    column="dynamic_content_id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="dynamicContent"    column="dynamic_content"    />
+    </resultMap>
+
+    <sql id="selectShzjDynamicContentVo">
+        select dynamic_content_id, dynamic_id, dynamic_content from shzj_dynamic_content
+    </sql>
+
+    <select id="selectShzjDynamicContentList" parameterType="ShzjDynamicContent" resultMap="ShzjDynamicContentResult">
+        <include refid="selectShzjDynamicContentVo"/>
+        <where>  
+            <if test="dynamicId != null "> and dynamic_id = #{dynamicId}</if>
+            <if test="dynamicContent != null  and dynamicContent != ''"> and dynamic_content = #{dynamicContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjDynamicContentById" parameterType="Integer" resultMap="ShzjDynamicContentResult">
+        <include refid="selectShzjDynamicContentVo"/>
+        where dynamic_content_id = #{dynamicContentId}
+    </select>
+        
+    <insert id="insertShzjDynamicContent" parameterType="ShzjDynamicContent" useGeneratedKeys="true" keyProperty="dynamicContentId">
+        insert into shzj_dynamic_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dynamicId != null">dynamic_id,</if>
+            <if test="dynamicContent != null and dynamicContent != ''">dynamic_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dynamicId != null">#{dynamicId},</if>
+            <if test="dynamicContent != null and dynamicContent != ''">#{dynamicContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjDynamicContent" parameterType="ShzjDynamicContent">
+        update shzj_dynamic_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dynamicId != null">dynamic_id = #{dynamicId},</if>
+            <if test="dynamicContent != null and dynamicContent != ''">dynamic_content = #{dynamicContent},</if>
+        </trim>
+        where dynamic_content_id = #{dynamicContentId}
+    </update>
+
+    <delete id="deleteShzjDynamicContentById" parameterType="Integer">
+        delete from shzj_dynamic_content where dynamic_content_id = #{dynamicContentId}
+    </delete>
+
+    <delete id="deleteShzjDynamicContentByIds" parameterType="String">
+        delete from shzj_dynamic_content where dynamic_content_id in 
+        <foreach item="dynamicContentId" collection="array" open="(" separator="," close=")">
+            #{dynamicContentId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjFeaturesMapper">
+    
+    <resultMap type="ShzjFeatures" id="ShzjFeaturesResult">
+        <result property="conId"    column="con_id"    />
+        <result property="conTitle"    column="con_title"    />
+        <result property="conCity"    column="con_city"    />
+        <result property="recommendDays"    column="recommend_days"    />
+        <result property="enjoyNum"    column="enjoy_num"    />
+        <result property="feaType"    column="fea_type"    />
+        <result property="conUrl"    column="con_URL"    />
+        <result property="picUrl"    column="pic_url"    />
+    </resultMap>
+
+    <sql id="selectShzjFeaturesVo">
+        select con_id, con_title, con_city, recommend_days, enjoy_num, fea_type, con_URL, pic_url from shzj_features
+    </sql>
+
+    <select id="selectShzjFeaturesList" parameterType="ShzjFeatures" resultMap="ShzjFeaturesResult">
+        <include refid="selectShzjFeaturesVo"/>
+        <where>  
+            <if test="conTitle != null  and conTitle != ''"> and con_title = #{conTitle}</if>
+            <if test="conCity != null  and conCity != ''"> and con_city = #{conCity}</if>
+            <if test="recommendDays != null  and recommendDays != ''"> and recommend_days = #{recommendDays}</if>
+            <if test="enjoyNum != null  and enjoyNum != ''"> and enjoy_num = #{enjoyNum}</if>
+            <if test="feaType != null  and feaType != ''"> and fea_type = #{feaType}</if>
+            <if test="conUrl != null  and conUrl != ''"> and con_URL = #{conUrl}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjFeaturesById" parameterType="Integer" resultMap="ShzjFeaturesResult">
+        <include refid="selectShzjFeaturesVo"/>
+        where con_id = #{conId}
+    </select>
+        
+    <insert id="insertShzjFeatures" parameterType="ShzjFeatures" useGeneratedKeys="true" keyProperty="conId">
+        insert into shzj_features
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="conTitle != null and conTitle != ''">con_title,</if>
+            <if test="conCity != null and conCity != ''">con_city,</if>
+            <if test="recommendDays != null and recommendDays != ''">recommend_days,</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num,</if>
+            <if test="feaType != null and feaType != ''">fea_type,</if>
+            <if test="conUrl != null and conUrl != ''">con_URL,</if>
+            <if test="picUrl != null and picUrl != ''">pic_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="conTitle != null and conTitle != ''">#{conTitle},</if>
+            <if test="conCity != null and conCity != ''">#{conCity},</if>
+            <if test="recommendDays != null and recommendDays != ''">#{recommendDays},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">#{enjoyNum},</if>
+            <if test="feaType != null and feaType != ''">#{feaType},</if>
+            <if test="conUrl != null and conUrl != ''">#{conUrl},</if>
+            <if test="picUrl != null and picUrl != ''">#{picUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjFeatures" parameterType="ShzjFeatures">
+        update shzj_features
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="conTitle != null and conTitle != ''">con_title = #{conTitle},</if>
+            <if test="conCity != null and conCity != ''">con_city = #{conCity},</if>
+            <if test="recommendDays != null and recommendDays != ''">recommend_days = #{recommendDays},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num = #{enjoyNum},</if>
+            <if test="feaType != null and feaType != ''">fea_type = #{feaType},</if>
+            <if test="conUrl != null and conUrl != ''">con_URL = #{conUrl},</if>
+            <if test="picUrl != null and picUrl != ''">pic_url = #{picUrl},</if>
+        </trim>
+        where con_id = #{conId}
+    </update>
+
+    <delete id="deleteShzjFeaturesById" parameterType="Integer">
+        delete from shzj_features where con_id = #{conId}
+    </delete>
+
+    <delete id="deleteShzjFeaturesByIds" parameterType="String">
+        delete from shzj_features where con_id in 
+        <foreach item="conId" collection="array" open="(" separator="," close=")">
+            #{conId}
+        </foreach>
+    </delete>
+
+</mapper>

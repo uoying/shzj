@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjTopicMapper">
+    
+    <resultMap type="ShzjTopic" id="ShzjTopicResult">
+        <result property="topicId"    column="topic_id"    />
+        <result property="topicName"    column="topic_name"    />
+        <result property="articleNum"    column="article_num"    />
+        <result property="browseNum"    column="browse_num"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="topicType"    column="topic_type"    />
+    </resultMap>
+
+    <sql id="selectShzjTopicVo">
+        select topic_id, topic_name, article_num, browse_num, pic_url, topic_type from shzj_topic
+    </sql>
+
+    <select id="selectShzjTopicList" parameterType="ShzjTopic" resultMap="ShzjTopicResult">
+        <include refid="selectShzjTopicVo"/>
+        <where>  
+            <if test="topicName != null  and topicName != ''"> and topic_name like concat('%', #{topicName}, '%')</if>
+            <if test="articleNum != null "> and article_num = #{articleNum}</if>
+            <if test="browseNum != null "> and browse_num = #{browseNum}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+            <if test="topicType != null  and topicType != ''"> and topic_type = #{topicType}</if>
+        </where>
+    </select>
+
+    <select id="selectShzjTopicListTop" parameterType="int" resultMap="ShzjTopicResult">
+        <include refid="selectShzjTopicVo"/>
+        ORDER BY article_num desc LIMIT #{num}
+    </select>
+
+
+    <select id="selectShzjTopicTypeList" resultType="String">
+        select topic_type from shzj_topic group by topic_type
+    </select>
+
+    <select id="selectShzjTopicById" parameterType="Integer" resultMap="ShzjTopicResult">
+        <include refid="selectShzjTopicVo"/>
+        where topic_id = #{topicId}
+    </select>
+
+    <select id="selectShzjTopicListOrderByArticleNum" parameterType="ShzjTopic" resultMap="ShzjTopicResult">
+        <include refid="selectShzjTopicVo"/>
+        <where>
+            <if test="topicName != null  and topicName != ''"> and topic_name like concat('%', #{topicName}, '%')</if>
+            <if test="articleNum != null "> and article_num = #{articleNum}</if>
+            <if test="browseNum != null "> and browse_num = #{browseNum}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+            <if test="topicType != null  and topicType != ''"> and topic_type = #{topicType}</if>
+        </where>
+        order by article_num desc
+    </select>
+
+    <insert id="insertShzjTopic" parameterType="ShzjTopic" useGeneratedKeys="true" keyProperty="topicId">
+        insert into shzj_topic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topicName != null and topicName != ''">topic_name,</if>
+            <if test="articleNum != null">article_num,</if>
+            <if test="browseNum != null">browse_num,</if>
+            <if test="picUrl != null and picUrl != ''">pic_url,</if>
+            <if test="topicType != null and topicType != ''">topic_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topicName != null and topicName != ''">#{topicName},</if>
+            <if test="articleNum != null">#{articleNum},</if>
+            <if test="browseNum != null">#{browseNum},</if>
+            <if test="picUrl != null and picUrl != ''">#{picUrl},</if>
+            <if test="topicType != null and topicType != ''">#{topicType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjTopic" parameterType="ShzjTopic">
+        update shzj_topic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topicName != null and topicName != ''">topic_name = #{topicName},</if>
+            <if test="articleNum != null">article_num = #{articleNum},</if>
+            <if test="browseNum != null">browse_num = #{browseNum},</if>
+            <if test="picUrl != null and picUrl != ''">pic_url = #{picUrl},</if>
+            <if test="topicType != null and topicType != ''">topic_type = #{topicType},</if>
+        </trim>
+        where topic_id = #{topicId}
+    </update>
+
+    <delete id="deleteShzjTopicById" parameterType="Integer">
+        delete from shzj_topic where topic_id = #{topicId}
+    </delete>
+
+    <delete id="deleteShzjTopicByIds" parameterType="String">
+        delete from shzj_topic where topic_id in 
+        <foreach item="topicId" collection="array" open="(" separator="," close=")">
+            #{topicId}
+        </foreach>
+    </delete>
+
+</mapper>

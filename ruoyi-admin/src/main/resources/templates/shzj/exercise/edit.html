@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改答题信息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-exercise-edit" th:object="${shzjExercise}">
+            <input name="exeId" th:field="*{exeId}" type="hidden">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">题目解析：</label>
+                <div class="col-sm-8">
+                    <input name="parse" th:field="*{parse}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shzj/exercise";
+        $("#form-exercise-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-exercise-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

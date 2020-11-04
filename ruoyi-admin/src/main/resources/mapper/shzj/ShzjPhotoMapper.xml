@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjPhotoMapper">
+    
+    <resultMap type="ShzjPhoto" id="ShzjPhotoResult">
+        <result property="photoId"    column="photo_id"    />
+        <result property="creatTime"    column="creat_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="photoUrl"    column="photo_url"    />
+    </resultMap>
+
+    <sql id="selectShzjPhotoVo">
+        select photo_id, creat_time, user_id, photo_url from shzj_photo
+    </sql>
+
+    <select id="selectShzjPhotoList" parameterType="ShzjPhoto" resultMap="ShzjPhotoResult">
+        <include refid="selectShzjPhotoVo"/>
+        <where>  
+            <if test="creatTime != null "> and creat_time = #{creatTime}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="photoUrl != null  and photoUrl != ''"> and photo_url = #{photoUrl}</if>
+        </where>
+            ORDER BY creat_time desc
+    </select>
+    
+    <select id="selectShzjPhotoById" parameterType="Integer" resultMap="ShzjPhotoResult">
+        <include refid="selectShzjPhotoVo"/>
+        where photo_id = #{photoId}
+    </select>
+        
+    <insert id="insertShzjPhoto" parameterType="ShzjPhoto" useGeneratedKeys="true" keyProperty="photoId">
+        insert into shzj_photo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="creatTime != null">creat_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="photoUrl != null and photoUrl != ''">photo_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="creatTime != null">#{creatTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="photoUrl != null and photoUrl != ''">#{photoUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjPhoto" parameterType="ShzjPhoto">
+        update shzj_photo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="creatTime != null">creat_time = #{creatTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="photoUrl != null and photoUrl != ''">photo_url = #{photoUrl},</if>
+        </trim>
+        where photo_id = #{photoId}
+    </update>
+
+    <delete id="deleteShzjPhotoById" parameterType="Integer">
+        delete from shzj_photo where photo_id = #{photoId}
+    </delete>
+
+    <delete id="deleteShzjPhotoByIds" parameterType="String">
+        delete from shzj_photo where photo_id in 
+        <foreach item="photoId" collection="array" open="(" separator="," close=")">
+            #{photoId}
+        </foreach>
+    </delete>
+
+</mapper>

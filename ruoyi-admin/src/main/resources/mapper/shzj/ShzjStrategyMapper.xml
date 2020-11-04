@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjStrategyMapper">
+    
+    <resultMap type="ShzjStrategy" id="ShzjStrategyResult">
+        <result property="strategyId"    column="strategy_id"    />
+        <result property="strategyTitle"    column="strategy_title"    />
+        <result property="strategyGrade"    column="strategy_grade"    />
+        <result property="commentNum"    column="comment_num"    />
+        <result property="enjoyNum"    column="enjoy_num"    />
+        <result property="scenicGrade"    column="scenic_grade"    />
+        <result property="scenicHonor"    column="scenic_honor"    />
+        <result property="contentUrl"    column="content_URL"    />
+        <result property="strategyType"    column="strategy_type"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="cityId"    column="city_id"    />
+    </resultMap>
+
+    <sql id="selectShzjStrategyVo">
+        select strategy_id, strategy_title, strategy_grade, comment_num, enjoy_num, scenic_grade, scenic_honor, content_URL, strategy_type, pic_url, city_id from shzj_strategy
+    </sql>
+
+    <select id="selectStrategyTypeList" resultType="String">
+        select strategy_type from shzj_strategy
+        group by strategy_type
+    </select>
+
+    <select id="selectShzjStrategyList" parameterType="ShzjStrategy" resultMap="ShzjStrategyResult">
+        <include refid="selectShzjStrategyVo"/>
+        <where>  
+            <if test="strategyTitle != null  and strategyTitle != ''"> and strategy_title like concat('%', #{strategyTitle}, '%')</if>
+            <if test="strategyGrade != null "> and strategy_grade = #{strategyGrade}</if>
+            <if test="commentNum != null  and commentNum != ''"> and comment_num = #{commentNum}</if>
+            <if test="enjoyNum != null  and enjoyNum != ''"> and enjoy_num = #{enjoyNum}</if>
+            <if test="scenicGrade != null  and scenicGrade != ''"> and scenic_grade = #{scenicGrade}</if>
+            <if test="scenicHonor != null  and scenicHonor != ''"> and scenic_honor = #{scenicHonor}</if>
+            <if test="contentUrl != null  and contentUrl != ''"> and content_URL = #{contentUrl}</if>
+            <if test="strategyType != null  and strategyType != ''"> and strategy_type = #{strategyType}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+            <if test="cityId != null "> and city_id = #{cityId}</if>
+        </where>
+        order by strategy_grade desc
+    </select>
+    
+    <select id="selectShzjStrategyById" parameterType="Integer" resultMap="ShzjStrategyResult">
+        <include refid="selectShzjStrategyVo"/>
+        where strategy_id = #{strategyId}
+    </select>
+        
+    <insert id="insertShzjStrategy" parameterType="ShzjStrategy" useGeneratedKeys="true" keyProperty="strategyId">
+        insert into shzj_strategy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="strategyTitle != null and strategyTitle != ''">strategy_title,</if>
+            <if test="strategyGrade != null">strategy_grade,</if>
+            <if test="commentNum != null and commentNum != ''">comment_num,</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num,</if>
+            <if test="scenicGrade != null and scenicGrade != ''">scenic_grade,</if>
+            <if test="scenicHonor != null and scenicHonor != ''">scenic_honor,</if>
+            <if test="contentUrl != null and contentUrl != ''">content_URL,</if>
+            <if test="strategyType != null and strategyType != ''">strategy_type,</if>
+            <if test="picUrl != null and picUrl != ''">pic_url,</if>
+            <if test="cityId != null">city_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="strategyTitle != null and strategyTitle != ''">#{strategyTitle},</if>
+            <if test="strategyGrade != null">#{strategyGrade},</if>
+            <if test="commentNum != null and commentNum != ''">#{commentNum},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">#{enjoyNum},</if>
+            <if test="scenicGrade != null and scenicGrade != ''">#{scenicGrade},</if>
+            <if test="scenicHonor != null and scenicHonor != ''">#{scenicHonor},</if>
+            <if test="contentUrl != null and contentUrl != ''">#{contentUrl},</if>
+            <if test="strategyType != null and strategyType != ''">#{strategyType},</if>
+            <if test="picUrl != null and picUrl != ''">#{picUrl},</if>
+            <if test="cityId != null">#{cityId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjStrategy" parameterType="ShzjStrategy">
+        update shzj_strategy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="strategyTitle != null and strategyTitle != ''">strategy_title = #{strategyTitle},</if>
+            <if test="strategyGrade != null">strategy_grade = #{strategyGrade},</if>
+            <if test="commentNum != null and commentNum != ''">comment_num = #{commentNum},</if>
+            <if test="enjoyNum != null and enjoyNum != ''">enjoy_num = #{enjoyNum},</if>
+            <if test="scenicGrade != null and scenicGrade != ''">scenic_grade = #{scenicGrade},</if>
+            <if test="scenicHonor != null and scenicHonor != ''">scenic_honor = #{scenicHonor},</if>
+            <if test="contentUrl != null and contentUrl != ''">content_URL = #{contentUrl},</if>
+            <if test="strategyType != null and strategyType != ''">strategy_type = #{strategyType},</if>
+            <if test="picUrl != null and picUrl != ''">pic_url = #{picUrl},</if>
+            <if test="cityId != null">city_id = #{cityId},</if>
+        </trim>
+        where strategy_id = #{strategyId}
+    </update>
+
+    <delete id="deleteShzjStrategyById" parameterType="Integer">
+        delete from shzj_strategy where strategy_id = #{strategyId}
+    </delete>
+
+    <delete id="deleteShzjStrategyByIds" parameterType="String">
+        delete from shzj_strategy where strategy_id in 
+        <foreach item="strategyId" collection="array" open="(" separator="," close=")">
+            #{strategyId}
+        </foreach>
+    </delete>
+
+</mapper>

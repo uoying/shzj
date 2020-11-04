@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjDynamicMapper">
+
+    <resultMap type="ShzjDynamic" id="ShzjDynamicResult">
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="dynamicTitle" column="dynamic_title"/>
+        <result property="dynamicTopic" column="dynamic_topic"/>
+        <result property="authorId" column="author_id"/>
+        <result property="dynamicPic" column="dynamic_pic"/>
+        <result property="dynamicAddress" column="dynamic_address"/>
+        <result property="dynamicLable" column="dynamic_lable"/>
+        <result property="discussNum" column="discuss_num"/>
+        <result property="collectNum" column="collect_num"/>
+        <result property="likeNum" column="like_num"/>
+        <result property="cityId" column="city_id"/>
+        <result property="creatTime" column="creat_time"/>
+    </resultMap>
+    <resultMap id="ShzjDynamicWithUserResult" type="ShzjDynamic">
+        <result property="dynamicId" column="dynamic_id"/>
+        <result property="dynamicTitle" column="dynamic_title"/>
+        <result property="backgroundPic" column="dynamic_pic"/>
+        <result property="dynamicAddress" column="dynamic_address"/>
+        <result property="likeNum" column="like_num"/>
+        <result property="headPortrait" column="head_portrait"/>
+    </resultMap>
+
+    <sql id="selectShzjDynamicVo">
+        select dynamic_id, dynamic_title, dynamic_topic, author_id, dynamic_pic, dynamic_address, dynamic_lable, discuss_num, collect_num, like_num, city_id, creat_time from shzj_dynamic
+    </sql>
+
+    <select id="selectShzjDynamicList" parameterType="ShzjDynamic" resultMap="ShzjDynamicResult">
+        <include refid="selectShzjDynamicVo"/>
+        <where>
+            <if test="dynamicTitle != null  and dynamicTitle != ''">and dynamic_title like concat('%', #{dynamicTitle}, '%')</if>
+            <if test="dynamicTopic != null  and dynamicTopic != ''">and dynamic_topic = #{dynamicTopic}</if>
+            <if test="authorId != null ">and author_id = #{authorId}</if>
+            <if test="dynamicPic != null  and dynamicPic != ''">and dynamic_pic = #{dynamicPic}</if>
+            <if test="dynamicAddress != null  and dynamicAddress != ''">and dynamic_address = #{dynamicAddress}</if>
+            <if test="dynamicLable != null  and dynamicLable != ''">and dynamic_lable = #{dynamicLable}</if>
+            <if test="discussNum != null ">and discuss_num = #{discussNum}</if>
+            <if test="collectNum != null ">and collect_num = #{collectNum}</if>
+            <if test="likeNum != null ">and like_num = #{likeNum}</if>
+            <if test="cityId != null ">and city_id = #{cityId}</if>
+            <if test="creatTime != null ">and creat_time = #{creatTime}</if>
+        </where>
+        order by dynamic_id desc
+    </select>
+    <select id="selectShzjDynamicListByDynamicTopic" parameterType="String" resultMap="ShzjDynamicWithUserResult">
+        select dynamic_id, dynamic_title, dynamic_pic, dynamic_address, like_num,head_portrait from shzj_dynamic,shzj_user
+        where shzj_dynamic.author_id=shzj_user.user_id and dynamic_topic=#{dynamicTopic}
+        order by creat_time desc
+    </select>
+    <select id="selectShzjDynamicListByDynamicTopicByHot" parameterType="String" resultMap="ShzjDynamicWithUserResult">
+        select dynamic_id, dynamic_title, dynamic_pic, dynamic_address, like_num,head_portrait from shzj_dynamic,shzj_user
+        where shzj_dynamic.author_id=shzj_user.user_id and dynamic_topic=#{dynamicTopic}
+        order by like_num desc
+    </select>
+    <select id="selectShzjDynamicListByAuthorId" parameterType="Integer" resultMap="ShzjDynamicResult">
+        <include refid="selectShzjDynamicVo"/>
+        <foreach item="authorId" collection="array" open="where" separator="or">
+            author_id=#{authorId}
+        </foreach>
+        order by dynamic_id desc
+    </select>
+
+    <select id="selectShzjDynamicById" parameterType="Integer" resultMap="ShzjDynamicResult">
+        <include refid="selectShzjDynamicVo"/>
+        where dynamic_id = #{dynamicId}
+    </select>
+
+    <insert id="insertShzjDynamic" parameterType="ShzjDynamic" useGeneratedKeys="true" keyProperty="dynamicId">
+        insert into shzj_dynamic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dynamicTitle != null and dynamicTitle != ''">dynamic_title,</if>
+            <if test="dynamicTopic != null">dynamic_topic,</if>
+            <if test="authorId != null">author_id,</if>
+            <if test="dynamicPic != null and dynamicPic != ''">dynamic_pic,</if>
+            <if test="dynamicAddress != null and dynamicAddress != ''">dynamic_address,</if>
+            <if test="dynamicLable != null">dynamic_lable,</if>
+            <if test="discussNum != null">discuss_num,</if>
+            <if test="collectNum != null">collect_num,</if>
+            <if test="likeNum != null">like_num,</if>
+            <if test="cityId != null">city_id,</if>
+            <if test="creatTime != null">creat_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dynamicTitle != null and dynamicTitle != ''">#{dynamicTitle},</if>
+            <if test="dynamicTopic != null">#{dynamicTopic},</if>
+            <if test="authorId != null">#{authorId},</if>
+            <if test="dynamicPic != null and dynamicPic != ''">#{dynamicPic},</if>
+            <if test="dynamicAddress != null and dynamicAddress != ''">#{dynamicAddress},</if>
+            <if test="dynamicLable != null">#{dynamicLable},</if>
+            <if test="discussNum != null">#{discussNum},</if>
+            <if test="collectNum != null">#{collectNum},</if>
+            <if test="likeNum != null">#{likeNum},</if>
+            <if test="cityId != null">#{cityId},</if>
+            <if test="creatTime != null">#{creatTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateShzjDynamic" parameterType="ShzjDynamic">
+        update shzj_dynamic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dynamicTitle != null and dynamicTitle != ''">dynamic_title = #{dynamicTitle},</if>
+            <if test="dynamicTopic != null">dynamic_topic = #{dynamicTopic},</if>
+            <if test="authorId != null">author_id = #{authorId},</if>
+            <if test="dynamicPic != null and dynamicPic != ''">dynamic_pic = #{dynamicPic},</if>
+            <if test="dynamicAddress != null and dynamicAddress != ''">dynamic_address = #{dynamicAddress},</if>
+            <if test="dynamicLable != null">dynamic_lable = #{dynamicLable},</if>
+            <if test="discussNum != null">discuss_num = #{discussNum},</if>
+            <if test="collectNum != null">collect_num = #{collectNum},</if>
+            <if test="likeNum != null">like_num = #{likeNum},</if>
+            <if test="cityId != null">city_id = #{cityId},</if>
+            <if test="creatTime != null">creat_time = #{creatTime},</if>
+        </trim>
+        where dynamic_id = #{dynamicId}
+    </update>
+
+    <delete id="deleteShzjDynamicById" parameterType="Integer">
+        delete from shzj_dynamic where dynamic_id = #{dynamicId}
+    </delete>
+
+    <delete id="deleteShzjDynamicByIds" parameterType="String">
+        delete from shzj_dynamic where dynamic_id in
+        <foreach item="dynamicId" collection="array" open="(" separator="," close=")">
+            #{dynamicId}
+        </foreach>
+    </delete>
+
+</mapper>

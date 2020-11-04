@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增诗词信息')" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-poem-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">题目：</label>
+                <div class="col-sm-8">
+                    <input name="poemName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">作者：</label>
+                <div class="col-sm-8">
+                    <input name="poemAuthor" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">诗文：</label>
+                <div class="col-sm-8">
+                    <input name="poemArtcle" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">诗文配图：</label>
+                <div class="col-sm-8">
+                    <input name="poemPicture" id="poemPicture" readonly class="form-control" type="text" required>
+                    <div class="file-loading">
+                        <input class="form-control file-upload" id="pic" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label is-required">诗文配音：</label>
+                <div class="col-sm-8">
+                    <input name="poemAudio" id="poemAudio" readonly class="form-control" type="text" required>
+                    <div class="file-loading">
+                        <input class="form-control file-upload" id="ado" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script th:inline="javascript">
+        var prefix = ctx + "shzj/poem"
+        $("#form-poem-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-poem-add').serialize());
+            }
+        }
+        $("#pic").fileinput({
+            uploadUrl: '/common/qiniuUpload',
+            autoReplace: true
+        }).on('fileuploaded', function (event, data, previewId, index) {
+            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            $("#poemPicture").val(data.response.msg);
+        }).on('fileremoved', function (event, id, index) {
+            $("input[name='" + event.currentTarget.id + "']").val('')
+        })
+        $("#ado").fileinput({
+            uploadUrl: '/common/qiniuUpload',
+            autoReplace: true
+        }).on('fileuploaded', function (event, data, previewId, index) {
+            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            $("#poemAudio").val(data.response.msg);
+        }).on('fileremoved', function (event, id, index) {
+            $("input[name='" + event.currentTarget.id + "']").val('')
+        })
+    </script>
+</body>
+</html>

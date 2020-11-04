@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjCouponGift1Mapper">
+    
+    <resultMap type="ShzjCouponGift1" id="ShzjCouponGift1Result">
+        <result property="coupongiftId"    column="coupongift_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="whethertoredeem"    column="whetherToRedeem"    />
+        <result property="couponId"    column="coupon_id"    />
+    </resultMap>
+
+    <sql id="selectShzjCouponGift1Vo">
+        select coupongift_id, user_id, whetherToRedeem, coupon_id from shzj_coupon_gift1
+    </sql>
+
+    <select id="selectShzjCouponGift1List" parameterType="ShzjCouponGift1" resultMap="ShzjCouponGift1Result">
+        <include refid="selectShzjCouponGift1Vo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="whethertoredeem != null "> and whetherToRedeem = #{whethertoredeem}</if>
+            <if test="couponId != null "> and coupon_id = #{couponId}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjCouponGift1ById" parameterType="Integer" resultMap="ShzjCouponGift1Result">
+        <include refid="selectShzjCouponGift1Vo"/>
+        where coupongift_id = #{coupongiftId}
+    </select>
+        
+    <insert id="insertShzjCouponGift1" parameterType="ShzjCouponGift1" useGeneratedKeys="true" keyProperty="coupongiftId">
+        insert into shzj_coupon_gift1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="whethertoredeem != null">whetherToRedeem,</if>
+            <if test="couponId != null">coupon_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="whethertoredeem != null">#{whethertoredeem},</if>
+            <if test="couponId != null">#{couponId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjCouponGift1" parameterType="ShzjCouponGift1">
+        update shzj_coupon_gift1
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="whethertoredeem != null">whetherToRedeem = #{whethertoredeem},</if>
+            <if test="couponId != null">coupon_id = #{couponId},</if>
+        </trim>
+        where coupongift_id = #{coupongiftId}
+    </update>
+
+    <delete id="deleteShzjCouponGift1ById" parameterType="Integer">
+        delete from shzj_coupon_gift1 where coupongift_id = #{coupongiftId}
+    </delete>
+
+    <delete id="deleteShzjCouponGift1ByIds" parameterType="String">
+        delete from shzj_coupon_gift1 where coupongift_id in 
+        <foreach item="coupongiftId" collection="array" open="(" separator="," close=")">
+            #{coupongiftId}
+        </foreach>
+    </delete>
+
+
+    <insert id="insertShzjMyCouponGift" parameterType="com.ruoyi.shzj.domain.DTO.CouponDTO">
+    INSERT INTO `shzj`.`shzj_coupon_gift1`( `user_id`, `whetherToRedeem`, `coupon_id`) VALUES ( #{userId}, 0, #{couponId});
+
+    </insert>
+
+    <select id="selectShzjMyCouponGift1" resultType="com.ruoyi.shzj.domain.DTO.MyCouponDTO">
+        SELECT
+            a.whetherToRedeem whetherToRedeem,
+            a.coupongift_id coupongiftId,
+            b.qian qian,
+            b.information1 information1,
+            b.information2 information2,
+            b.information3 information3,
+            b.create_time createTime,
+            b.end_time endTime
+        FROM
+            shzj_coupon_gift1 a
+            LEFT JOIN shzj_coupon b ON a.coupon_id = b.coupon_id
+        WHERE
+            a.user_id = #{userId}
+    </select>
+
+    <select id="selectShzjCouponGift1" resultType="com.ruoyi.shzj.domain.DTO.CouponGiftDTO">
+     SELECT
+    c.user_name userName,
+	a.information3 information3,
+	b.user_id userId,
+	b.whetherToRedeem whethertoredeem,
+	b.coupongift_id coupongiftId
+FROM
+	shzj_coupon a
+	LEFT JOIN shzj_coupon_gift1 b ON a.coupon_id = b.coupon_id
+	LEFT JOIN shzj_user c ON b.user_id = c.user_id
+WHERE
+	b.user_id != ""
+
+    </select>
+
+
+</mapper>

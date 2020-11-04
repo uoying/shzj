@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改城市信息')" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-city-edit" th:object="${shzjCity}">
+            <input name="cityId" th:field="*{cityId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">城市名称：</label>
+                <div class="col-sm-8">
+                    <input name="cityName" th:field="*{cityName}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">城市诗词：</label>
+                <div class="col-sm-8">
+                    <input name="cityPoem" th:field="*{cityPoem}" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">图片url：</label>
+                <div class="col-sm-8">
+                    <input name="picUrl" id="picUrl" th:field="*{picUrl}" class="form-control" type="text">
+                    <img width="100%" id="img">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">URL生成：</label>
+                <div class="col-sm-8">
+                    <div class="file-loading">
+                        <input class="form-control file-upload" id="mianPicurl" name="file" type="file">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script th:inline="javascript">
+        var prefix = ctx + "shzj/city";
+        $("#form-city-edit").validate({
+            focusCleanup: true
+        });
+        $(document).ready(function(){
+           $("#img").attr("src","http://oldcute.xyz"+$("#picUrl").val())
+        });
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-city-edit').serialize());
+            }
+        }
+        $(".file-upload").fileinput({
+            uploadUrl: '/common/qiniuUpload',
+            autoReplace: true,
+        }).on('fileuploaded', function (event, data, previewId, index) {
+            $("input[name='" + event.currentTarget.id + "']").val(data.response.url)
+            $("#picUrl").val(data.response.msg);
+            $("#img").attr("src","http://oldcute.xyz"+$("#picUrl").val())
+        }).on('fileremoved', function (event, id, index) {
+            $("input[name='" + event.currentTarget.id + "']").val('')
+        })
+    </script>
+</body>
+</html>

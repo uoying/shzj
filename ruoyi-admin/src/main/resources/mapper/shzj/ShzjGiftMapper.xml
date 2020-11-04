@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjGiftMapper">
+    
+    <resultMap type="ShzjGift" id="ShzjGiftResult">
+        <result property="giftId"    column="gift_id"    />
+        <result property="giftTitle"    column="gift_title"    />
+        <result property="giftInfo"    column="gift_info"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectShzjGiftVo">
+        select gift_id, gift_title, gift_info, user_id from shzj_gift
+    </sql>
+
+    <select id="selectShzjGiftList" parameterType="ShzjGift" resultMap="ShzjGiftResult">
+        <include refid="selectShzjGiftVo"/>
+        <where>  
+            <if test="giftTitle != null  and giftTitle != ''"> and gift_title = #{giftTitle}</if>
+            <if test="giftInfo != null  and giftInfo != ''"> and gift_info = #{giftInfo}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjGiftById" parameterType="Integer" resultMap="ShzjGiftResult">
+        <include refid="selectShzjGiftVo"/>
+        where gift_id = #{giftId}
+    </select>
+        
+    <insert id="insertShzjGift" parameterType="ShzjGift" useGeneratedKeys="true" keyProperty="giftId">
+        insert into shzj_gift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="giftTitle != null and giftTitle != ''">gift_title,</if>
+            <if test="giftInfo != null and giftInfo != ''">gift_info,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="giftTitle != null and giftTitle != ''">#{giftTitle},</if>
+            <if test="giftInfo != null and giftInfo != ''">#{giftInfo},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjGift" parameterType="ShzjGift">
+        update shzj_gift
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="giftTitle != null and giftTitle != ''">gift_title = #{giftTitle},</if>
+            <if test="giftInfo != null and giftInfo != ''">gift_info = #{giftInfo},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where gift_id = #{giftId}
+    </update>
+
+    <delete id="deleteShzjGiftById" parameterType="Integer">
+        delete from shzj_gift where gift_id = #{giftId}
+    </delete>
+
+    <delete id="deleteShzjGiftByIds" parameterType="String">
+        delete from shzj_gift where gift_id in 
+        <foreach item="giftId" collection="array" open="(" separator="," close=")">
+            #{giftId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjCityMapper">
+    
+    <resultMap type="ShzjCity" id="ShzjCityResult">
+        <result property="cityId"    column="city_id"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="cityPoem"    column="city_poem"    />
+        <result property="cityLike"    column="city_like"    />
+        <result property="cityCollect"    column="city_collect"    />
+        <result property="picUrl"    column="pic_URL"    />
+    </resultMap>
+
+    <sql id="selectShzjCityVo">
+        select city_id, city_name, city_poem, city_like, city_collect, pic_URL from shzj_city
+    </sql>
+
+    <select id="selectShzjCityList" parameterType="ShzjCity" resultMap="ShzjCityResult">
+        <include refid="selectShzjCityVo"/>
+        <where>  
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="cityPoem != null  and cityPoem != ''"> and city_poem = #{cityPoem}</if>
+            <if test="cityLike != null  and cityLike != ''"> and city_like = #{cityLike}</if>
+            <if test="cityCollect != null  and cityCollect != ''"> and city_collect = #{cityCollect}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_URL = #{picUrl}</if>
+        </where>
+    </select>
+    <select id="selectShzjFeaCityList" parameterType="ShzjCity" resultMap="ShzjCityResult">
+        <include refid="selectShzjCityVo"/>
+        <where>
+            city_poem != ""
+        </where>
+    </select>
+    
+    <select id="selectShzjCityById" parameterType="Integer" resultMap="ShzjCityResult">
+        <include refid="selectShzjCityVo"/>
+        where city_id = #{cityId}
+    </select>
+        
+    <insert id="insertShzjCity" parameterType="ShzjCity" useGeneratedKeys="true" keyProperty="cityId">
+        insert into shzj_city
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cityName != null and cityName != ''">city_name,</if>
+            <if test="cityPoem != null">city_poem,</if>
+            <if test="cityLike != null">city_like,</if>
+            <if test="cityCollect != null">city_collect,</if>
+            <if test="picUrl != null">pic_URL,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cityName != null and cityName != ''">#{cityName},</if>
+            <if test="cityPoem != null">#{cityPoem},</if>
+            <if test="cityLike != null">#{cityLike},</if>
+            <if test="cityCollect != null">#{cityCollect},</if>
+            <if test="picUrl != null">#{picUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjCity" parameterType="ShzjCity">
+        update shzj_city
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cityName != null and cityName != ''">city_name = #{cityName},</if>
+            <if test="cityPoem != null">city_poem = #{cityPoem},</if>
+            <if test="cityLike != null">city_like = #{cityLike},</if>
+            <if test="cityCollect != null">city_collect = #{cityCollect},</if>
+            <if test="picUrl != null">pic_URL = #{picUrl},</if>
+        </trim>
+        where city_id = #{cityId}
+    </update>
+
+    <delete id="deleteShzjCityById" parameterType="Integer">
+        delete from shzj_city where city_id = #{cityId}
+    </delete>
+
+    <delete id="deleteShzjCityByIds" parameterType="String">
+        delete from shzj_city where city_id in 
+        <foreach item="cityId" collection="array" open="(" separator="," close=")">
+            #{cityId}
+        </foreach>
+    </delete>
+
+</mapper>

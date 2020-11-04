@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjImageContentMapper">
+    
+    <resultMap type="ShzjImageContent" id="ShzjImageContentResult">
+        <result property="imageContentId"    column="image_content_id"    />
+        <result property="imageContentName"    column="image_content_name"    />
+        <result property="imageContentH5"    column="image_content_h5"    />
+        <result property="imageContentAudio"    column="image_content_Audio"    />
+        <result property="imageContentBackgroundimg"    column="image_content_backgroundImg"    />
+    </resultMap>
+
+    <sql id="selectShzjImageContentVo">
+        select image_content_id, image_content_name, image_content_h5, image_content_Audio, image_content_backgroundImg from shzj_image_content
+    </sql>
+
+    <select id="selectShzjImageContentList" parameterType="ShzjImageContent" resultMap="ShzjImageContentResult">
+        <include refid="selectShzjImageContentVo"/>
+        <where>  
+            <if test="imageContentName != null  and imageContentName != ''"> and image_content_name like concat('%', #{imageContentName}, '%')</if>
+            <if test="imageContentH5 != null  and imageContentH5 != ''"> and image_content_h5 = #{imageContentH5}</if>
+            <if test="imageContentAudio != null  and imageContentAudio != ''"> and image_content_Audio = #{imageContentAudio}</if>
+            <if test="imageContentBackgroundimg != null  and imageContentBackgroundimg != ''"> and image_content_backgroundImg = #{imageContentBackgroundimg}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjImageContentById" parameterType="Integer" resultMap="ShzjImageContentResult">
+        <include refid="selectShzjImageContentVo"/>
+        where image_content_id = #{imageContentId}
+    </select>
+        
+    <insert id="insertShzjImageContent" parameterType="ShzjImageContent" useGeneratedKeys="true" keyProperty="imageContentId">
+        insert into shzj_image_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imageContentName != null and imageContentName != ''">image_content_name,</if>
+            <if test="imageContentH5 != null and imageContentH5 != ''">image_content_h5,</if>
+            <if test="imageContentAudio != null">image_content_Audio,</if>
+            <if test="imageContentBackgroundimg != null and imageContentBackgroundimg != ''">image_content_backgroundImg,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imageContentName != null and imageContentName != ''">#{imageContentName},</if>
+            <if test="imageContentH5 != null and imageContentH5 != ''">#{imageContentH5},</if>
+            <if test="imageContentAudio != null">#{imageContentAudio},</if>
+            <if test="imageContentBackgroundimg != null and imageContentBackgroundimg != ''">#{imageContentBackgroundimg},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjImageContent" parameterType="ShzjImageContent">
+        update shzj_image_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imageContentName != null and imageContentName != ''">image_content_name = #{imageContentName},</if>
+            <if test="imageContentH5 != null and imageContentH5 != ''">image_content_h5 = #{imageContentH5},</if>
+            <if test="imageContentAudio != null">image_content_Audio = #{imageContentAudio},</if>
+            <if test="imageContentBackgroundimg != null and imageContentBackgroundimg != ''">image_content_backgroundImg = #{imageContentBackgroundimg},</if>
+        </trim>
+        where image_content_id = #{imageContentId}
+    </update>
+
+    <delete id="deleteShzjImageContentById" parameterType="Integer">
+        delete from shzj_image_content where image_content_id = #{imageContentId}
+    </delete>
+
+    <delete id="deleteShzjImageContentByIds" parameterType="String">
+        delete from shzj_image_content where image_content_id in 
+        <foreach item="imageContentId" collection="array" open="(" separator="," close=")">
+            #{imageContentId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjSignMapper">
+    
+    <resultMap type="ShzjSign" id="ShzjSignResult">
+        <result property="signId"    column="sign_id"    />
+        <result property="signTime"    column="sign_time"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectShzjSignVo">
+        select sign_id, sign_time, user_id from shzj_sign
+    </sql>
+
+    <select id="selectShzjSignList" parameterType="ShzjSign" resultMap="ShzjSignResult">
+        <include refid="selectShzjSignVo"/>
+        <where>  
+            <if test="signTime != null "> and sign_time like #{signTime}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjSignById" parameterType="Integer" resultMap="ShzjSignResult">
+        <include refid="selectShzjSignVo"/>
+        where sign_id = #{signId}
+    </select>
+        
+    <insert id="insertShzjSign" parameterType="ShzjSign">
+        insert into shzj_sign
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="signId != null">sign_id,</if>
+            <if test="signTime != null">sign_time,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="signId != null">#{signId},</if>
+            <if test="signTime != null">#{signTime},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjSign" parameterType="ShzjSign">
+        update shzj_sign
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where sign_id = #{signId}
+    </update>
+
+    <delete id="deleteShzjSignById" parameterType="Integer">
+        delete from shzj_sign where sign_id = #{signId}
+    </delete>
+
+    <delete id="deleteShzjSignByIds" parameterType="String">
+        delete from shzj_sign where sign_id in 
+        <foreach item="signId" collection="array" open="(" separator="," close=")">
+            #{signId}
+        </foreach>
+    </delete>
+
+</mapper>

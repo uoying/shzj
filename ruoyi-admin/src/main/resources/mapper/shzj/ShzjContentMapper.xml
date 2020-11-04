@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjContentMapper">
+    
+    <resultMap type="ShzjContent" id="ShzjContentResult">
+        <result property="conId"    column="con_id"    />
+        <result property="conTitile"    column="con_titile"    />
+        <result property="conAddress"    column="con_address"    />
+        <result property="conCity"    column="con_city"    />
+        <result property="isRecommend"    column="is_recommend"    />
+        <result property="conArticle"    column="con_article"    />
+        <result property="conScore"    column="con_score"    />
+        <result property="conType"    column="con_type"    />
+        <result property="conPicture"    column="con_picture"    />
+        <result property="conAudio"    column="con_audio"    />
+    </resultMap>
+
+    <sql id="selectShzjContentVo">
+        select con_id, con_titile, con_address, con_city, is_recommend, con_article, con_score, con_type, con_picture, con_audio from shzj_content
+    </sql>
+
+    <select id="selectShzjContentList" parameterType="ShzjContent" resultMap="ShzjContentResult">
+        <include refid="selectShzjContentVo"/>
+        <where>  
+            <if test="conTitile != null  and conTitile != ''"> and con_titile like concat('%', #{conTitile}, '%')</if>
+            <if test="conAddress != null  and conAddress != ''"> and con_address = #{conAddress}</if>
+            <if test="conCity != null "> and con_city = #{conCity}</if>
+            <if test="isRecommend != null "> and is_recommend = #{isRecommend}</if>
+            <if test="conArticle != null  and conArticle != ''"> and con_article = #{conArticle}</if>
+            <if test="conScore != null "> and con_score = #{conScore}</if>
+            <if test="conType != null "> and con_type = #{conType}</if>
+            <if test="conPicture != null  and conPicture != ''"> and con_picture = #{conPicture}</if>
+            <if test="conAudio != null  and conAudio != ''"> and con_audio = #{conAudio}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjContentById" parameterType="Integer" resultMap="ShzjContentResult">
+        <include refid="selectShzjContentVo"/>
+        where con_id = #{conId}
+    </select>
+        
+    <insert id="insertShzjContent" parameterType="ShzjContent" useGeneratedKeys="true" keyProperty="conId">
+        insert into shzj_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="conTitile != null and conTitile != ''">con_titile,</if>
+            <if test="conAddress != null and conAddress != ''">con_address,</if>
+            <if test="conCity != null">con_city,</if>
+            <if test="isRecommend != null">is_recommend,</if>
+            <if test="conArticle != null">con_article,</if>
+            <if test="conScore != null">con_score,</if>
+            <if test="conType != null">con_type,</if>
+            <if test="conPicture != null and conPicture != ''">con_picture,</if>
+            <if test="conAudio != null">con_audio,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="conTitile != null and conTitile != ''">#{conTitile},</if>
+            <if test="conAddress != null and conAddress != ''">#{conAddress},</if>
+            <if test="conCity != null">#{conCity},</if>
+            <if test="isRecommend != null">#{isRecommend},</if>
+            <if test="conArticle != null">#{conArticle},</if>
+            <if test="conScore != null">#{conScore},</if>
+            <if test="conType != null">#{conType},</if>
+            <if test="conPicture != null and conPicture != ''">#{conPicture},</if>
+            <if test="conAudio != null">#{conAudio},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjContent" parameterType="ShzjContent">
+        update shzj_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="conTitile != null and conTitile != ''">con_titile = #{conTitile},</if>
+            <if test="conAddress != null and conAddress != ''">con_address = #{conAddress},</if>
+            <if test="conCity != null">con_city = #{conCity},</if>
+            <if test="isRecommend != null">is_recommend = #{isRecommend},</if>
+            <if test="conArticle != null">con_article = #{conArticle},</if>
+            <if test="conScore != null">con_score = #{conScore},</if>
+            <if test="conType != null">con_type = #{conType},</if>
+            <if test="conPicture != null and conPicture != ''">con_picture = #{conPicture},</if>
+            <if test="conAudio != null">con_audio = #{conAudio},</if>
+        </trim>
+        where con_id = #{conId}
+    </update>
+
+    <delete id="deleteShzjContentById" parameterType="Integer">
+        delete from shzj_content where con_id = #{conId}
+    </delete>
+
+    <delete id="deleteShzjContentByIds" parameterType="String">
+        delete from shzj_content where con_id in 
+        <foreach item="conId" collection="array" open="(" separator="," close=")">
+            #{conId}
+        </foreach>
+    </delete>
+
+</mapper>

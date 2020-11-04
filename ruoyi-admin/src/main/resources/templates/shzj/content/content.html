@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('内容信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>标题：</label>
+                                <input type="text" name="conTitile"/>
+                            </li>
+                            <li>
+                                <label>地址：</label>
+                                <input type="text" name="conAddress"/>
+                            </li>
+                            <li>
+                                <label>城市编号：</label>
+                                <input type="text" name="conCity"/>
+                            </li>
+                            <li>
+                                <label>是否推荐：</label>
+                                <input type="text" name="isRecommend"/>
+                            </li>
+                            <li>
+                                <label>文章：</label>
+                                <input type="text" name="conArticle"/>
+                            </li>
+                            <li>
+                                <label>评分：</label>
+                                <input type="text" name="conScore"/>
+                            </li>
+                            <li>
+                                <label>类型编号：</label>
+                                <select name="conType">
+                                    <option value="">所有</option>
+                                    <option value="-1">代码生成请选择字典属性</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label>图片：</label>
+                                <input type="text" name="conPicture"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="shzj:content:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="shzj:content:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="shzj:content:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="shzj:content:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('shzj:content:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('shzj:content:remove')}]];
+        var prefix = ctx + "shzj/content";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "内容信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'conId',
+                    title: '内容编号',
+                    visible: false
+                },
+                {
+                    field: 'conTitile',
+                    title: '标题'
+                },
+                {
+                    field: 'conAddress',
+                    title: '地址'
+                },
+                {
+                    field: 'cityName',
+                    title: '城市'
+                },
+                {
+                    field: 'isRecommend',
+                    title: '是否推荐'
+                },
+                {
+                    field: 'conScore',
+                    title: '评分'
+                },
+                {
+                    field: 'typeName',
+                    title: '分类'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.conId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.conId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

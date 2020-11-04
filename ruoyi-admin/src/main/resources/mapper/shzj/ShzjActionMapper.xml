@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjActionMapper">
+    
+    <resultMap type="ShzjAction" id="ShzjActionResult">
+        <result property="actionId"    column="action_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="content"    column="content"    />
+        <result property="contentid"    column="contentId"    />
+        <result property="creatTime"    column="creat_time"    />
+    </resultMap>
+
+    <sql id="selectShzjActionVo">
+        select action_id, user_id, content, contentId, creat_time from shzj_action
+    </sql>
+
+    <select id="selectShzjActionList" parameterType="ShzjAction" resultMap="ShzjActionResult">
+        <include refid="selectShzjActionVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="contentid != null "> and contentId = #{contentid}</if>
+            <if test="creatTime != null "> and creat_time = #{creatTime}</if>
+        </where>
+    </select>
+
+    <select id="selectAuthorIdsInAttention" parameterType="Integer" resultType="Integer">
+        select contentId from shzj_action
+        <where>
+            user_id = #{userId} and content = "user"
+        </where>
+    </select>
+    
+    <select id="selectShzjActionById" parameterType="Integer" resultMap="ShzjActionResult">
+        <include refid="selectShzjActionVo"/>
+        where action_id = #{actionId}
+    </select>
+        
+    <insert id="insertShzjAction" parameterType="ShzjAction" useGeneratedKeys="true" keyProperty="actionId">
+        insert into shzj_action
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="contentid != null">contentId,</if>
+            <if test="creatTime != null">creat_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="contentid != null">#{contentid},</if>
+            <if test="creatTime != null">#{creatTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjAction" parameterType="ShzjAction">
+        update shzj_action
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="contentid != null">contentId = #{contentid},</if>
+            <if test="creatTime != null">creat_time = #{creatTime},</if>
+        </trim>
+        where action_id = #{actionId}
+    </update>
+
+    <delete id="deleteShzjActionById" parameterType="Integer">
+        delete from shzj_action where action_id = #{actionId}
+    </delete>
+
+    <delete id="deleteShzjActionByIds" parameterType="String">
+        delete from shzj_action where action_id in 
+        <foreach item="actionId" collection="array" open="(" separator="," close=")">
+            #{actionId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjMapMapper">
+    
+    <resultMap type="ShzjMap" id="ShzjMapResult">
+        <result property="mapId"    column="map_id"    />
+        <result property="mapCity"    column="map_city"    />
+        <result property="mapType"    column="map_type"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="contentId"    column="content_id"    />
+        <result property="mapTitle"    column="map_title"    />
+    </resultMap>
+
+    <sql id="selectShzjMapVo">
+        select map_id, map_city, map_type, pic_url, content_id, map_title from shzj_map
+    </sql>
+
+    <select id="selectShzjMapList" parameterType="ShzjMap" resultMap="ShzjMapResult">
+        <include refid="selectShzjMapVo"/>
+        <where>  
+            <if test="mapCity != null  and mapCity != ''"> and map_city = #{mapCity}</if>
+            <if test="mapType != null  and mapType != ''"> and map_type = #{mapType}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+            <if test="contentId != null "> and content_id = #{contentId}</if>
+            <if test="mapTitle != null  and mapTitle != ''"> and map_title = #{mapTitle}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjMapById" parameterType="Integer" resultMap="ShzjMapResult">
+        <include refid="selectShzjMapVo"/>
+        where map_id = #{mapId}
+    </select>
+        
+    <insert id="insertShzjMap" parameterType="ShzjMap" useGeneratedKeys="true" keyProperty="mapId">
+        insert into shzj_map
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mapCity != null and mapCity != ''">map_city,</if>
+            <if test="mapType != null and mapType != ''">map_type,</if>
+            <if test="picUrl != null and picUrl != ''">pic_url,</if>
+            <if test="contentId != null">content_id,</if>
+            <if test="mapTitle != null and mapTitle != ''">map_title,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mapCity != null and mapCity != ''">#{mapCity},</if>
+            <if test="mapType != null and mapType != ''">#{mapType},</if>
+            <if test="picUrl != null and picUrl != ''">#{picUrl},</if>
+            <if test="contentId != null">#{contentId},</if>
+            <if test="mapTitle != null and mapTitle != ''">#{mapTitle},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjMap" parameterType="ShzjMap">
+        update shzj_map
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mapCity != null and mapCity != ''">map_city = #{mapCity},</if>
+            <if test="mapType != null and mapType != ''">map_type = #{mapType},</if>
+            <if test="picUrl != null and picUrl != ''">pic_url = #{picUrl},</if>
+            <if test="contentId != null">content_id = #{contentId},</if>
+            <if test="mapTitle != null and mapTitle != ''">map_title = #{mapTitle},</if>
+        </trim>
+        where map_id = #{mapId}
+    </update>
+
+    <delete id="deleteShzjMapById" parameterType="Integer">
+        delete from shzj_map where map_id = #{mapId}
+    </delete>
+
+    <delete id="deleteShzjMapByIds" parameterType="String">
+        delete from shzj_map where map_id in 
+        <foreach item="mapId" collection="array" open="(" separator="," close=")">
+            #{mapId}
+        </foreach>
+    </delete>
+
+</mapper>

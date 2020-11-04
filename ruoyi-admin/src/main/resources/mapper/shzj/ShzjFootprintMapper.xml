@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjFootprintMapper">
+    
+    <resultMap type="ShzjFootprint" id="ShzjFootprintResult">
+        <result property="footId"    column="foot_id"    />
+        <result property="cityId"    column="city_id"    />
+        <result property="footTitle"    column="foot_title"    />
+        <result property="footContent"    column="foot_content"    />
+        <result property="footPicture"    column="foot_picture"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectShzjFootprintVo">
+        select foot_id, city_id, foot_title, foot_content, foot_picture, user_id, create_time from shzj_footprint
+    </sql>
+
+    <select id="selectShzjFootprintList" parameterType="ShzjFootprint" resultMap="ShzjFootprintResult">
+        <include refid="selectShzjFootprintVo"/>
+        <where>  
+            <if test="cityId != null "> and city_id = #{cityId}</if>
+            <if test="footTitle != null  and footTitle != ''"> and foot_title = #{footTitle}</if>
+            <if test="footContent != null  and footContent != ''"> and foot_content = #{footContent}</if>
+            <if test="footPicture != null  and footPicture != ''"> and foot_picture = #{footPicture}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+    </select><select id="selectShzjFootprintListOrderByCreatTime" parameterType="ShzjFootprint" resultMap="ShzjFootprintResult">
+        <include refid="selectShzjFootprintVo"/>
+        <where>
+            <if test="cityId != null "> and city_id = #{cityId}</if>
+            <if test="footTitle != null  and footTitle != ''"> and foot_title = #{footTitle}</if>
+            <if test="footContent != null  and footContent != ''"> and foot_content = #{footContent}</if>
+            <if test="footPicture != null  and footPicture != ''"> and foot_picture = #{footPicture}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectShzjFootprintById" parameterType="Integer" resultMap="ShzjFootprintResult">
+        <include refid="selectShzjFootprintVo"/>
+        where foot_id = #{footId}
+    </select>
+        
+    <insert id="insertShzjFootprint" parameterType="ShzjFootprint" useGeneratedKeys="true" keyProperty="footId">
+        insert into shzj_footprint
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cityId != null">city_id,</if>
+            <if test="footTitle != null and footTitle != ''">foot_title,</if>
+            <if test="footContent != null and footContent != ''">foot_content,</if>
+            <if test="footPicture != null">foot_picture,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cityId != null">#{cityId},</if>
+            <if test="footTitle != null and footTitle != ''">#{footTitle},</if>
+            <if test="footContent != null and footContent != ''">#{footContent},</if>
+            <if test="footPicture != null">#{footPicture},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjFootprint" parameterType="ShzjFootprint">
+        update shzj_footprint
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cityId != null">city_id = #{cityId},</if>
+            <if test="footTitle != null and footTitle != ''">foot_title = #{footTitle},</if>
+            <if test="footContent != null and footContent != ''">foot_content = #{footContent},</if>
+            <if test="footPicture != null">foot_picture = #{footPicture},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where foot_id = #{footId}
+    </update>
+
+    <delete id="deleteShzjFootprintById" parameterType="Integer">
+        delete from shzj_footprint where foot_id = #{footId}
+    </delete>
+
+    <delete id="deleteShzjFootprintByIds" parameterType="String">
+        delete from shzj_footprint where foot_id in 
+        <foreach item="footId" collection="array" open="(" separator="," close=")">
+            #{footId}
+        </foreach>
+    </delete>
+
+</mapper>

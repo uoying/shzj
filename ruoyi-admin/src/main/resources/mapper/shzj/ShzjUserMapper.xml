@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjUserMapper">
+    
+    <resultMap type="ShzjUser" id="ShzjUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="loginId"    column="login_id"    />
+        <result property="loginPwd"    column="login_pwd"    />
+        <result property="salt"    column="salt"    />
+        <result property="myConcern"    column="my_concern"    />
+        <result property="myFans"    column="my_fans"    />
+        <result property="myDiscuss"    column="my_discuss"    />
+        <result property="myAdmire"    column="my_admire"    />
+        <result property="answerNumber"    column="answer_number"    />
+        <result property="quizNumber"    column="quiz_number"    />
+        <result property="userName"    column="user_name"    />
+        <result property="headPortrait"    column="head_portrait"    />
+        <result property="integral"    column="integral"    />
+        <result property="sex"    column="sex"    />
+        <result property="signature"    column="signature"    />
+    </resultMap>
+
+    <sql id="selectShzjUserVo">
+        select user_id, login_id, login_pwd, salt, my_concern, my_fans, my_discuss, my_admire, answer_number, quiz_number, user_name, head_portrait, integral, sex, signature from shzj_user
+    </sql>
+
+    <update id="updateShzjUserAnswer" parameterType="Integer">
+
+        UPDATE `shzj_user` SET
+           `answer_number` = answer_number + 1,
+            `integral` = `integral` + 10
+             WHERE `user_id` = #{userId}
+</update>
+
+    <update id="updateShzjUserReward" >
+            UPDATE `shzj_user` SET
+            `integral` = `integral` + #{reward}
+             WHERE `user_id` = #{userId}
+    </update>
+
+    <update id="updateShzjUserQuiz" parameterType="Integer">
+        UPDATE `shzj_user` SET  `quiz_number`=quiz_number +1,`integral` = `integral` + 50  WHERE `user_id` = #{userId}
+</update>
+
+    <select id="selectShzjUserAnswerPhb" resultType="com.ruoyi.shzj.domain.DTO.PhbDTO">
+        SELECT user_id userId,user_name userName,head_portrait headPortrait,answer_number answerNumber,integral FROM `shzj_user` ORDER BY answer_number DESC
+</select>
+
+    <select id="selectShzjIntegral" resultType="Integer">
+        SELECT integral FROM shzj_user WHERE user_id=#{userId}
+    </select>
+
+    <update id="updateShzjSubtract">
+        UPDATE `shzj_user`
+        SET `integral` = `integral` - #{jif}
+        WHERE
+            `user_id` = #{userId}
+    </update>
+
+    <select id="selectShzjUserList" parameterType="ShzjUser" resultMap="ShzjUserResult">
+        <include refid="selectShzjUserVo"/>
+        <where>  
+            <if test="loginId != null  and loginId != ''"> and login_id = #{loginId}</if>
+            <if test="loginPwd != null  and loginPwd != ''"> and login_pwd = #{loginPwd}</if>
+            <if test="salt != null  and salt != ''"> and salt = #{salt}</if>
+            <if test="myConcern != null  and myConcern != ''"> and my_concern = #{myConcern}</if>
+            <if test="myFans != null  and myFans != ''"> and my_fans = #{myFans}</if>
+            <if test="myDiscuss != null  and myDiscuss != ''"> and my_discuss = #{myDiscuss}</if>
+            <if test="myAdmire != null  and myAdmire != ''"> and my_admire = #{myAdmire}</if>
+            <if test="answerNumber != null "> and answer_number = #{answerNumber}</if>
+            <if test="quizNumber != null "> and quiz_number = #{quizNumber}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="headPortrait != null  and headPortrait != ''"> and head_portrait = #{headPortrait}</if>
+            <if test="integral != null "> and integral = #{integral}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="signature != null  and signature != ''"> and signature = #{signature}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjUserById" parameterType="Integer" resultMap="ShzjUserResult">
+        <include refid="selectShzjUserVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertShzjUser" parameterType="ShzjUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into shzj_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginId != null and loginId != ''">login_id,</if>
+            <if test="loginPwd != null and loginPwd != ''">login_pwd,</if>
+            <if test="salt != null and salt != ''">salt,</if>
+            <if test="myConcern != null">my_concern,</if>
+            <if test="myFans != null">my_fans,</if>
+            <if test="myDiscuss != null">my_discuss,</if>
+            <if test="myAdmire != null">my_admire,</if>
+            <if test="answerNumber != null">answer_number,</if>
+            <if test="quizNumber != null">quiz_number,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="headPortrait != null">head_portrait,</if>
+            <if test="integral != null">integral,</if>
+            <if test="sex != null">sex,</if>
+            <if test="signature != null">signature,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginId != null and loginId != ''">#{loginId},</if>
+            <if test="loginPwd != null and loginPwd != ''">#{loginPwd},</if>
+            <if test="salt != null and salt != ''">#{salt},</if>
+            <if test="myConcern != null">#{myConcern},</if>
+            <if test="myFans != null">#{myFans},</if>
+            <if test="myDiscuss != null">#{myDiscuss},</if>
+            <if test="myAdmire != null">#{myAdmire},</if>
+            <if test="answerNumber != null">#{answerNumber},</if>
+            <if test="quizNumber != null">#{quizNumber},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="headPortrait != null">#{headPortrait},</if>
+            <if test="integral != null">#{integral},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="signature != null">#{signature},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjUser" parameterType="ShzjUser">
+        update shzj_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loginId != null and loginId != ''">login_id = #{loginId},</if>
+            <if test="loginPwd != null and loginPwd != ''">login_pwd = #{loginPwd},</if>
+            <if test="salt != null and salt != ''">salt = #{salt},</if>
+            <if test="myConcern != null">my_concern = #{myConcern},</if>
+            <if test="myFans != null">my_fans = #{myFans},</if>
+            <if test="myDiscuss != null">my_discuss = #{myDiscuss},</if>
+            <if test="myAdmire != null">my_admire = #{myAdmire},</if>
+            <if test="answerNumber != null">answer_number = #{answerNumber},</if>
+            <if test="quizNumber != null">quiz_number = #{quizNumber},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="headPortrait != null">head_portrait = #{headPortrait},</if>
+            <if test="integral != null">integral = #{integral},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="signature != null">signature = #{signature},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteShzjUserById" parameterType="Integer">
+        delete from shzj_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteShzjUserByIds" parameterType="String">
+        delete from shzj_user where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <select id="selectShzjHeadPortrait" resultType="com.ruoyi.shzj.domain.DTO.HeadPortraitDTO">
+        SELECT user_id userId,user_name userName,head_portrait headPortrait,answer_number answerNumber FROM shzj_user WHERE user_id=#{userId}
+    </select>
+</mapper>

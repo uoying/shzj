@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.shzj.mapper.ShzjExerciseMapper">
+    
+    <resultMap type="ShzjExercise" id="ShzjExerciseResult">
+        <result property="exeId"    column="exe_Id"    />
+        <result property="subject"    column="subject"    />
+        <result property="choiceA"    column="choice_a"    />
+        <result property="choiceB"    column="choice_b"    />
+        <result property="choiceC"    column="choice_c"    />
+        <result property="choiceD"    column="choice_d"    />
+        <result property="status"    column="status"    />
+        <result property="answer"    column="answer"    />
+        <result property="author"    column="author"    />
+        <result property="parse"    column="parse"    />
+        <result property="voiceUrl"    column="voice_url"    />
+        <result property="judge"    column="judge"    />
+    </resultMap>
+
+    <sql id="selectShzjExerciseVo">
+        select exe_Id, subject, choice_a, choice_b, choice_c, choice_d, status, answer, author, parse, voice_url, judge from shzj_exercise
+    </sql>
+
+    <select id="selectShzjExerciseList" parameterType="ShzjExercise" resultMap="ShzjExerciseResult">
+        <include refid="selectShzjExerciseVo"/>
+        <where>  
+            <if test="subject != null  and subject != ''"> and subject = #{subject}</if>
+            <if test="choiceA != null  and choiceA != ''"> and choice_a = #{choiceA}</if>
+            <if test="choiceB != null  and choiceB != ''"> and choice_b = #{choiceB}</if>
+            <if test="choiceC != null  and choiceC != ''"> and choice_c = #{choiceC}</if>
+            <if test="choiceD != null  and choiceD != ''"> and choice_d = #{choiceD}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+            <if test="author != null "> and author = #{author}</if>
+            <if test="parse != null  and parse != ''"> and parse = #{parse}</if>
+            <if test="voiceUrl != null  and voiceUrl != ''"> and voice_url = #{voiceUrl}</if>
+            <if test="judge != null "> and judge = #{judge}</if>
+        </where>
+    </select>
+    
+    <select id="selectShzjExerciseById" parameterType="Integer" resultMap="ShzjExerciseResult">
+        <include refid="selectShzjExerciseVo"/>
+        where exe_Id = #{exeId}
+    </select>
+        
+    <insert id="insertShzjExercise" parameterType="ShzjExercise" useGeneratedKeys="true" keyProperty="exeId">
+        insert into shzj_exercise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="subject != null and subject != ''">subject,</if>
+            <if test="choiceA != null and choiceA != ''">choice_a,</if>
+            <if test="choiceB != null and choiceB != ''">choice_b,</if>
+            <if test="choiceC != null and choiceC != ''">choice_c,</if>
+            <if test="choiceD != null and choiceD != ''">choice_d,</if>
+            <if test="status != null">status,</if>
+            <if test="answer != null and answer != ''">answer,</if>
+            <if test="author != null">author,</if>
+            <if test="parse != null">parse,</if>
+            <if test="voiceUrl != null">voice_url,</if>
+            <if test="judge != null">judge,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="subject != null and subject != ''">#{subject},</if>
+            <if test="choiceA != null and choiceA != ''">#{choiceA},</if>
+            <if test="choiceB != null and choiceB != ''">#{choiceB},</if>
+            <if test="choiceC != null and choiceC != ''">#{choiceC},</if>
+            <if test="choiceD != null and choiceD != ''">#{choiceD},</if>
+            <if test="status != null">#{status},</if>
+            <if test="answer != null and answer != ''">#{answer},</if>
+            <if test="author != null">#{author},</if>
+            <if test="parse != null">#{parse},</if>
+            <if test="voiceUrl != null">#{voiceUrl},</if>
+            <if test="judge != null">#{judge},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShzjExercise" parameterType="ShzjExercise">
+        update shzj_exercise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="subject != null and subject != ''">subject = #{subject},</if>
+            <if test="choiceA != null and choiceA != ''">choice_a = #{choiceA},</if>
+            <if test="choiceB != null and choiceB != ''">choice_b = #{choiceB},</if>
+            <if test="choiceC != null and choiceC != ''">choice_c = #{choiceC},</if>
+            <if test="choiceD != null and choiceD != ''">choice_d = #{choiceD},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="answer != null and answer != ''">answer = #{answer},</if>
+            <if test="author != null">author = #{author},</if>
+            <if test="parse != null">parse = #{parse},</if>
+            <if test="voiceUrl != null">voice_url = #{voiceUrl},</if>
+            <if test="judge != null">judge = #{judge},</if>
+        </trim>
+        where exe_Id = #{exeId}
+    </update>
+
+    <delete id="deleteShzjExerciseById" parameterType="Integer">
+        delete from shzj_exercise where exe_Id = #{exeId}
+    </delete>
+
+    <delete id="deleteShzjExerciseByIds" parameterType="String">
+        delete from shzj_exercise where exe_Id in 
+        <foreach item="exeId" collection="array" open="(" separator="," close=")">
+            #{exeId}
+        </foreach>
+    </delete>
+
+
+<!--  自己的sql  -->
+
+    <select id="selectShzjExercise" resultType="com.ruoyi.shzj.domain.DTO.ExerciseDTO">
+        SELECT
+        exe_Id exeId,
+        `subject` subject,
+        choice_a choiceA,
+        choice_b choiceB,
+        choice_c choiceC,
+        choice_d choiceD,
+		judge
+        FROM shzj_exercise WHERE judge=#{judge}
+    </select>
+
+    <select id="selectShzjAnswerById" resultType="com.ruoyi.shzj.domain.DTO.AnswerDTO">
+
+SELECT
+	exe_Id exeId,
+	answer,
+	parse,
+	voice_url voiceUrl,
+	author,
+	a.user_name userName
+FROM
+	shzj_exercise
+	LEFT JOIN shzj_user a ON a.user_id = shzj_exercise.author
+ WHERE exe_Id=#{id}
+    </select>
+
+    <insert id="updateShzjtiExercise" useGeneratedKeys="true" keyProperty="exeId">
+    INSERT INTO
+    `shzj`.`shzj_exercise`( `subject`, `choice_a`, `choice_b`, `choice_c`, `choice_d`, `status`, `answer`,`parse`, `author`, `judge`)
+     VALUES ( #{subject}, #{choiceA}, #{choiceB}, #{choiceC}, #{choiceD}, 0, #{answer},#{parse},#{userId},#{judge} );
+
+
+    </insert>
+</mapper>
